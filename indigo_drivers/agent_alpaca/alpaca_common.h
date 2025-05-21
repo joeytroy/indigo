@@ -142,6 +142,7 @@ typedef struct indigo_alpaca_device_struct {
 			bool canslew;
 			bool cansync;
 			bool cansettracking;
+			bool canfindhome;
 			bool athome;
 			bool atpark;
 			double siderealtime;

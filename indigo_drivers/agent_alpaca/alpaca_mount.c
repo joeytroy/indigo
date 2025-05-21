@@ -32,6 +32,20 @@ static indigo_alpaca_error alpaca_get_interfaceversion(indigo_alpaca_device *dev
 	return indigo_alpaca_error_OK;
 }
 
+static indigo_alpaca_error alpaca_get_canfindhome(indigo_alpaca_device *device, int version, bool *value) {
+    pthread_mutex_lock(&device->mutex);
+    if (!device->connected) {
+        pthread_mutex_unlock(&device->mutex);
+        return indigo_alpaca_error_NotConnected;
+    }
+    
+    // Check if home property exists and is supported
+    indigo_property *home_property = indigo_device_get_property(device->indigo_device, MOUNT_HOME_PROPERTY_NAME);
+    *value = (home_property != NULL && !home_property->hidden);
+    pthread_mutex_unlock(&device->mutex);
+    return indigo_alpaca_error_OK;
+}
+
 static indigo_alpaca_error alpaca_get_cansetguiderates(indigo_alpaca_device *device, int version, bool *value) {
 	pthread_mutex_lock(&device->mutex);
 	if (!device->connected) {

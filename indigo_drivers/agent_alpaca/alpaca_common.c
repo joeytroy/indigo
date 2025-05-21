@@ -97,6 +97,7 @@ void indigo_alpaca_update_property(indigo_alpaca_device *alpaca_device, indigo_p
 		}
 	} else if (!strcmp(property->name, UTC_TIME_PROPERTY_NAME)) {
 		alpaca_device->mount.cansetguiderates = true;
+		alpaca_device->mount.canfindhome = true;
 		if (property->state == INDIGO_OK_STATE) {
 			for (int i = 0; i < property->count; i++) {
 				indigo_item *item = property->items + i;

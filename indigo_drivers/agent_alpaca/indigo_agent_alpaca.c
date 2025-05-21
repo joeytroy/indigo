@@ -320,6 +320,12 @@ static bool alpaca_v1_api_handler(int socket, char *method, char *path, char *pa
 		if (!strncmp(command, "imagearray", 10)) {
 			indigo_alpaca_ccd_get_imagearray(alpaca_device, 1, socket, client_transaction_id, server_transaction_id++, !strcmp(method, "GET/GZIP"), !strcmp(method, "GET/IMAGEBYTES"));
 			return false;
+		} else if (!strncmp(command, "canfindhome", 11)) {
+			buffer = indigo_alloc_large_buffer();
+			snprintf(buffer, INDIGO_BUFFER_SIZE, "{ \"Value\": true, \"ClientTransactionID\": %u, \"ServerTransactionID\": %u }", client_transaction_id, server_transaction_id++);
+			send_json_response(socket, path, 200, "OK", buffer);
+			indigo_free_large_buffer(buffer);
+			return true;
 		} else {
 			buffer = indigo_alloc_large_buffer();
 			long index = snprintf(buffer, INDIGO_BUFFER_SIZE, "{ ");

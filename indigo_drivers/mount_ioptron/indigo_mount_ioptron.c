@@ -51,6 +51,12 @@
 #define MOUNT_HOME_SEARCH_ITEM				(MOUNT_HOME_PROPERTY->items+1)
 #define MOUNT_HOME_SEARCH_ITEM_NAME		"SEARCH"
 
+#define MOUNT_CAN_FIND_HOME_PROPERTY     (PRIVATE_DATA->can_find_home_property)
+#define CAN_FIND_HOME_ITEM               (MOUNT_CAN_FIND_HOME_PROPERTY->items+0)
+
+#define MOUNT_CAN_FIND_HOME_PROPERTY_NAME "CAN_FIND_HOME"
+#define CAN_FIND_HOME_ITEM_NAME          "ENABLED"
+
 #define MOUNT_PROTOCOL_PROPERTY       (PRIVATE_DATA->protocol_property)
 #define PROTOCOL_AUTO_ITEM            (MOUNT_PROTOCOL_PROPERTY->items+0)
 #define PROTOCOL_8406_ITEM            (MOUNT_PROTOCOL_PROPERTY->items+1)
@@ -91,6 +97,7 @@ typedef struct {
 	bool no_park;
 	bool has_sp;
 	indigo_property *protocol_property;
+	indigo_property *can_find_home_property;
 } ioptron_private_data;
 
 static bool ieq_command(indigo_device *device, char *command, char *response, int max) {
@@ -1906,6 +1913,12 @@ static indigo_result mount_attach(indigo_device *device) {
 			return INDIGO_FAILED;
 		indigo_init_switch_item(MOUNT_HOME_SEARCH_ITEM, MOUNT_HOME_SEARCH_ITEM_NAME, "Search mechanical zero position", false);
 		MOUNT_HOME_PROPERTY->count = 1;
+		// -------------------------------------------------------------------------------- MOUNT_CAN_FIND_HOME
+		MOUNT_CAN_FIND_HOME_PROPERTY = indigo_init_switch_property(NULL, device->name, MOUNT_CAN_FIND_HOME_PROPERTY_NAME, MAIN_GROUP, "Can find home position", INDIGO_OK_STATE, INDIGO_RW_PERM, INDIGO_ONE_OF_MANY_RULE, 1);
+		if (MOUNT_CAN_FIND_HOME_PROPERTY == NULL)
+			return INDIGO_FAILED;
+		indigo_init_switch_item(CAN_FIND_HOME_ITEM, CAN_FIND_HOME_ITEM_NAME, "Mount can find home position", true);
+		// -------------------------------------------------------------------------------- MOUNT_PROTOCOL
 		// -------------------------------------------------------------------------------- MOUNT_PROTOCOL
 		MOUNT_PROTOCOL_PROPERTY = indigo_init_switch_property(NULL, device->name, MOUNT_PROTOCOL_PROPERTY_NAME, MAIN_GROUP, "Mount protocol version", INDIGO_OK_STATE, INDIGO_RW_PERM, INDIGO_ONE_OF_MANY_RULE, 8);
 		if (MOUNT_PROTOCOL_PROPERTY == NULL)
@@ -2088,6 +2101,7 @@ static indigo_result mount_detach(indigo_device *device) {
 		mount_connect_callback(device);
 	}
 	indigo_release_property(MOUNT_PROTOCOL_PROPERTY);
+	indigo_release_property(MOUNT_CAN_FIND_HOME_PROPERTY);
 	INDIGO_DEVICE_DETACH_LOG(DRIVER_NAME, device->name);
 	return indigo_mount_detach(device);
 }

@@ -37,6 +37,8 @@ extern "C" {
 #define MOUNT_IOPTRON_NAME              "iOptron Mount"
 #define MOUNT_IOPTRON_GUIDER_NAME       "iOptron Mount (guider)"
 
+// Mount capabilities
+#define MOUNT_CAN_FIND_HOME             (1 << 0)    // Mount supports finding home position
 
 /** Create mount IOPTRON device instance
  */
